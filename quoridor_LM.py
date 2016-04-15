@@ -58,7 +58,7 @@ class Board:
             each player owns 10 walls and there is initially no wall on the
             board
         """
-        dim = 9
+        dim = 5
         mid = int(dim / 2 )
         print (mid)
         self.size = dim

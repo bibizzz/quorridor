@@ -45,10 +45,14 @@ inf = float("inf")
 #import ETE2  lib for viewing trees
 
 class Search_node:
-    def __init__(self,  action,  value,  duration = 0 )::
+    def __init__(self,  father,  action,  value,  duration = 0 ):
+        self.action = action
+        self.value = value
+        self.duration = duration
+        self.father = father
+        self.child = []
         
-        
-    def add_child(child):
+    def add_child(self, child):
         self.childs.append(child)
 
 
@@ -69,22 +73,22 @@ def search(state,cut_value,  game,  prune=True):
     print (game.step)
     f = open("search_tree_" + str(game.step) + ".txt", 'w')
 
-    def max_value(state, alpha, beta, depth):
+    def max_value(state, alpha, beta, depth, node):
         start = time.time()
-        if game.cutoff(state, depth):
-            return game.evaluate(state), None
+#        if game.cutoff(state, depth):
+#            return game.evaluate(state), None
         val = -inf
         action = None
         pre_val = game.evaluate(state)
         print ("pre " + str(pre_val))
         for a, s in game.successors(state):
-            print (str(a))
+            #print (str(a))
             cur_val = game.evaluate(s)
-            #print (str(a) + ':' + str(cur_val))
+            print (str(a) + ':' + str(cur_val))
             if cur_val > pre_val+cut_value:
                 v, _ = min_value(s, alpha, beta, depth + 1)
-              #  f.write("a: " + str(a) + "; v: " + str(v) +  "; depth:" + \
-             #   str(depth) + "; alpha:" + str(alpha) +  "; beta:" + str(beta) + " \n")
+                f.write("a: " + str(a) + "; v: " + str(v) +  "; depth:" + \
+                str(depth) + "; alpha:" + str(alpha) +  "; beta:" + str(beta) + " \n")
             else:
                 v = cur_val
             if v > val:
@@ -98,9 +102,9 @@ def search(state,cut_value,  game,  prune=True):
         print("max t:" + str(end - start))
         return val, action
 
-    def min_value(state, alpha, beta, depth):
-        if game.cutoff(state, depth):
-            return game.evaluate(state), None
+    def min_value(state, alpha, beta, depth,  node):
+ #       if game.cutoff(state, depth):
+ #           return game.evaluate(state), None
         val = inf
         action = None
         pre_val = game.evaluate(state)
