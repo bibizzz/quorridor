@@ -28,8 +28,8 @@ class MyAgent(Agent, minimax.Game):
         """
         start = time.time()
         board, player = state
-        
-        legal_p_moves = board.get_actions(player) 
+
+        legal_p_moves = board.get_actions(player)
         #legal_p_moves = board.get_legal_pawn_moves(player)  # A list of action
         print( "nb moves: " + str((len(legal_p_moves))))
         other_player = (player + 1) % 2
@@ -49,7 +49,7 @@ class MyAgent(Agent, minimax.Game):
         if board.is_finished():
             return True
 
-        if depth > 4:
+        if depth > 0:
             return True
         return False
 
@@ -79,7 +79,7 @@ class MyAgent(Agent, minimax.Game):
         It must return an action representing the move the player
         will perform.
         """
-        self.player = player 
+        self.player = player
         self.step = step
         start = time.time()
         board = dict_to_board(percepts)

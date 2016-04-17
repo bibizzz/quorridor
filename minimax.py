@@ -44,24 +44,34 @@ inf = float("inf")
 
 #import ETE2  lib for viewing trees
 
+
 class Search_node:
-    def __init__(self,  father,  action,  value,  duration = 0 ):
+    def __init__(self, father, action, value, duration=0):
         self.action = action
         self.value = value
         self.duration = duration
         self.father = father
         self.child = []
-        
+
     def add_child(self, child):
         self.childs.append(child)
 
+    def print_node(self):
+        print("a" + str(self.action) + ":" + str(self.value))
 
-def nodes(state,  game):
+    def print_tree(self):
+        self.print_node()
+        for node in self.child:
+            self.print_tree(node)
+
+
+
+def nodes(state, game):
     for a, s in game.successors(state):
-        yield (a,  game.evaluate(s))
-    
+        yield (a, game.evaluate(s))
 
-def search(state,cut_value,  game,  prune=True):
+
+def search(state, cut_value, game, prune=True):
     """Perform a MiniMax/AlphaBeta search and return the best action.
 
     Arguments:
@@ -84,11 +94,14 @@ def search(state,cut_value,  game,  prune=True):
         for a, s in game.successors(state):
             #print (str(a))
             cur_val = game.evaluate(s)
-            print (str(a) + ':' + str(cur_val))
-            if cur_val > pre_val+cut_value:
-                v, _ = min_value(s, alpha, beta, depth + 1)
+          #print (str(a) + ':' + str(cur_val))
+            node_child = Search_node(node, a, cur_val)
+            node.addd_child(node_child)
+            if cur_val > pre_val + cut_value:
+                v, _ = min_value(s, alpha, beta, depth + 1, node_child)
                 f.write("a: " + str(a) + "; v: " + str(v) +  "; depth:" + \
-                str(depth) + "; alpha:" + str(alpha) +  "; beta:" + str(beta) + " \n")
+                str(depth) + "; alpha:" + str(alpha) +  "; beta:" + str(beta) \
+                + " \n")
             else:
                 v = cur_val
             if v > val:
@@ -102,7 +115,7 @@ def search(state,cut_value,  game,  prune=True):
         print("max t:" + str(end - start))
         return val, action
 
-    def min_value(state, alpha, beta, depth,  node):
+    def min_value(state, alpha, beta, depth, node):
  #       if game.cutoff(state, depth):
  #           return game.evaluate(state), None
         val = inf
@@ -111,10 +124,12 @@ def search(state,cut_value,  game,  prune=True):
         print ("min pre " + str(pre_val))
         for a, s in game.successors(state):
             cur_val = game.evaluate(s)
+            node_child = Search_node(node, a, cur_val)
+            node.addd_child(node_child)
             if cur_val < pre_val - cut_value:
-                v, _ = max_value(s, alpha, beta, depth + 1)
+                v, _ = max_value(s, alpha, beta, depth + 1, node_child)
              #   f.write("a: " + str(a) + "; v: " + str(v) +  "; depth:" + \
-              #  str(depth) + "; alpha:" + str(alpha) +  "; beta:" + str(beta) + " \n")
+    #  str(depth) + "; alpha:" + str(alpha) +  "; beta:" + str(beta) + " \n")
             else:
                 v = cur_val
             if v < val:
@@ -126,6 +141,9 @@ def search(state,cut_value,  game,  prune=True):
                     beta = min(beta, v)
         return val, action
 
-    _, action = max_value(state, -inf, inf, 0)
+    root_node = Search_node(None, None, 0)
+
+    _, action = max_value(state, -inf, inf, 0, root_node)
+    root_node.print_tree()
     f.close()
     return action
