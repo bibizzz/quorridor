@@ -49,7 +49,7 @@ class MyAgent(Agent, minimax.Game):
         if board.is_finished():
             return True
 
-        if depth > 0:
+        if depth > 1:
             return True
         return False
 

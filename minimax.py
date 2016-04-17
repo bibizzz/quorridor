@@ -51,18 +51,21 @@ class Search_node:
         self.value = value
         self.duration = duration
         self.father = father
-        self.child = []
+        self.children = []
 
     def add_child(self, child):
-        self.childs.append(child)
+        self.children.append(child)
 
     def print_node(self):
-        print("a" + str(self.action) + ":" + str(self.value))
+        print(str(self.action) + ":" + str(self.value))
 
     def print_tree(self):
         self.print_node()
-        for node in self.child:
-            self.print_tree(node)
+        for node in self.children:
+            node.print_tree()
+
+    def save_tree(file_n):
+        self.print_node()
 
 
 
@@ -85,8 +88,8 @@ def search(state, cut_value, game, prune=True):
 
     def max_value(state, alpha, beta, depth, node):
         start = time.time()
-#        if game.cutoff(state, depth):
-#            return game.evaluate(state), None
+        if game.cutoff(state, depth):
+            return game.evaluate(state), None
         val = -inf
         action = None
         pre_val = game.evaluate(state)
@@ -96,7 +99,7 @@ def search(state, cut_value, game, prune=True):
             cur_val = game.evaluate(s)
           #print (str(a) + ':' + str(cur_val))
             node_child = Search_node(node, a, cur_val)
-            node.addd_child(node_child)
+            node.add_child(node_child)
             if cur_val > pre_val + cut_value:
                 v, _ = min_value(s, alpha, beta, depth + 1, node_child)
                 f.write("a: " + str(a) + "; v: " + str(v) +  "; depth:" + \
@@ -116,8 +119,8 @@ def search(state, cut_value, game, prune=True):
         return val, action
 
     def min_value(state, alpha, beta, depth, node):
- #       if game.cutoff(state, depth):
- #           return game.evaluate(state), None
+        if game.cutoff(state, depth):
+            return game.evaluate(state), None
         val = inf
         action = None
         pre_val = game.evaluate(state)
@@ -125,7 +128,7 @@ def search(state, cut_value, game, prune=True):
         for a, s in game.successors(state):
             cur_val = game.evaluate(s)
             node_child = Search_node(node, a, cur_val)
-            node.addd_child(node_child)
+            node.add_child(node_child)
             if cur_val < pre_val - cut_value:
                 v, _ = max_value(s, alpha, beta, depth + 1, node_child)
              #   f.write("a: " + str(a) + "; v: " + str(v) +  "; depth:" + \
